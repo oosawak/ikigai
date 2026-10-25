@@ -55,6 +55,16 @@ def parse_recipe(path: Path) -> dict:
         "source_author": meta.get("source_author"),
         "body_html": markdown.markdown(body_md, extensions=["extra"]),
     }
+    src = meta.get("source_url") or ""
+    if "instagram.com" in src:
+        recipe["embed_platform"] = "instagram"
+        recipe["embed_url"] = src
+    elif "threads." in src:
+        recipe["embed_platform"] = "threads"
+        recipe["embed_url"] = src
+    else:
+        recipe["embed_platform"] = None
+        recipe["embed_url"] = None
     return recipe
 
 

@@ -14,6 +14,7 @@ const UI = {
     region: "Region",
     back: "← All recipes",
     source: "Source",
+    originalPost: "Original post",
     footer: "Everyday Japanese recipes and techniques, shared with the world.",
     notFound: "Recipe not found.",
   },
@@ -30,6 +31,7 @@ const UI = {
     region: "地域",
     back: "← レシピ一覧へ",
     source: "出典",
+    originalPost: "元投稿",
     footer: "日本の日々のレシピと工夫を、世界へ。",
     notFound: "レシピが見つかりません。",
   },
@@ -112,6 +114,9 @@ function renderDetail(slug) {
   const source = r.source_url
     ? `<div class="source">${esc(t().source)}: <a href="${esc(r.source_url)}" target="_blank" rel="noopener">${esc(r.source_author || r.source_url)}</a></div>`
     : "";
+  const embed = r.embed_url
+    ? `<h2 class="embed-title">${esc(t().originalPost)}</h2><div class="embed" id="embed-box"></div>`
+    : "";
   $app.innerHTML = `
     <article class="detail">
       <a class="back" href="#/">${esc(t().back)}</a>
@@ -119,8 +124,38 @@ function renderDetail(slug) {
       <p class="alt-title">${esc(altTitle(r))}</p>
       <div class="meta">${meta.join("")}</div>
       <div class="body">${r.body_html}</div>
+      ${embed}
       ${source}
     </article>`;
+  if (r.embed_url) renderEmbed(r);
+}
+
+function loadScriptOnce(src, id) {
+  if (document.getElementById(id)) return;
+  const s = document.createElement("script");
+  s.src = src;
+  s.async = true;
+  s.id = id;
+  document.body.appendChild(s);
+}
+
+function renderEmbed(r) {
+  const box = document.getElementById("embed-box");
+  if (!box) return;
+  const bq = document.createElement("blockquote");
+  if (r.embed_platform === "instagram") {
+    bq.className = "instagram-media";
+    bq.setAttribute("data-instgrm-permalink", r.embed_url);
+    bq.setAttribute("data-instgrm-version", "14");
+    box.appendChild(bq);
+    if (window.instgrm) window.instgrm.Embeds.process();
+    else loadScriptOnce("https://www.instagram.com/embed.js", "ig-embed-js");
+  } else if (r.embed_platform === "threads") {
+    bq.className = "text-post-media";
+    bq.setAttribute("data-text-post-permalink", r.embed_url);
+    box.appendChild(bq);
+    loadScriptOnce("https://www.threads.net/embed.js", "th-embed-js");
+  }
 }
 
 function applyLang() {
