@@ -3,21 +3,26 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#789c86" />
     <title>IKIGAI — Japanese recipes for a deliberate life</title>
-    <style>
-      body { font-family: system-ui, sans-serif; margin: 0; padding: 3rem 1.5rem; background: #faf7f2; color: #2b2b2b; }
-      main { max-width: 640px; margin: 0 auto; }
-      h1 { font-size: 3rem; letter-spacing: .35em; margin: 0 0 .5rem; }
-      .sub { font-size: 1.1rem; color: #789c86; margin-bottom: 2rem; }
-      p { line-height: 1.8; }
-    </style>
+    <link rel="stylesheet" href="./assets/style.css" />
   </head>
   <body>
-    <main>
-      <h1>IKIGAI</h1>
-      <div class="sub">Japanese recipes for a deliberate life.</div>
-      <p>日本の丁寧な暮らしのレシピ集 — 麹、低温調理、コーヒー、日々の工夫。</p>
-      <p>Everyday Japanese recipes and techniques — koji, low-temperature cooking, coffee, and the small careful practices of daily life. Coming soon.</p>
+    <header>
+      <div class="header-inner">
+        <a class="brand" href="#/">
+          <span class="brand-name">IKIGAI</span>
+          <span class="brand-sub" id="brand-sub">Japanese recipes for a deliberate life.</span>
+        </a>
+        <button id="lang-toggle" type="button" aria-label="Switch language">日本語</button>
+      </div>
+    </header>
+    <main id="app">
+      <p class="loading">Loading…</p>
     </main>
+    <footer>
+      <p id="footer-note">Everyday Japanese recipes and techniques, shared with the world.</p>
+    </footer>
+    <script src="./assets/app.js"></script>
   </body>
 </html>

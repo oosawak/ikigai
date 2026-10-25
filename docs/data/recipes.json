@@ -1,0 +1,49 @@
+{
+  "site": "IKIGAI",
+  "subtitle_en": "Japanese recipes for a deliberate life",
+  "subtitle_ja": "日本の丁寧な暮らしのレシピ集",
+  "categories": {
+    "koji": {
+      "ja": "麹・発酵",
+      "en": "Koji & Fermentation"
+    },
+    "low-temp": {
+      "ja": "低温調理",
+      "en": "Low-Temperature Cooking"
+    },
+    "coffee": {
+      "ja": "コーヒー",
+      "en": "Coffee"
+    },
+    "nuts": {
+      "ja": "ナッツ・ロースト",
+      "en": "Nuts & Roasting"
+    },
+    "airfryer": {
+      "ja": "エアフライヤー",
+      "en": "Air Fryer"
+    },
+    "daily": {
+      "ja": "日々の暮らし",
+      "en": "Daily Life"
+    }
+  },
+  "count": 1,
+  "recipes": [
+    {
+      "id": "shio-koji",
+      "slug": "shio-koji",
+      "date": "2026-10-25",
+      "title_ja": "塩麹（手作り）",
+      "title_en": "Homemade Shio Koji",
+      "category": "koji",
+      "temp_c": 60,
+      "minutes": 360,
+      "season": "通年",
+      "region": null,
+      "source_url": null,
+      "source_author": null,
+      "body_html": "<h2>材料</h2>\n<ul>\n<li>米麹 200g</li>\n<li>塩 60g（麹の約30%）</li>\n<li>水 300ml</li>\n</ul>\n<h2>手順</h2>\n<ol>\n<li>麹と塩をよく混ぜる</li>\n<li>水を加えて混ぜ、清潔な容器に入れる</li>\n<li>低温調理器やヨーグルトメーカーで 60℃・6時間ほど保温する（常温の場合は1日1回かき混ぜて1週間〜10日）</li>\n<li>粒が柔らかく、甘い香りがしたら完成。冷蔵庫で保存する</li>\n</ol>\n<h2>コツ</h2>\n<ul>\n<li>塩分は全体の約13%が目安。多すぎると発酵が進みにくい</li>\n<li>完成後は肉や魚を漬ける、野菜と和える、炒め物の味付けなど万能に使える</li>\n</ul>\n<h2>暮らしの背景</h2>\n<p>塩麹は日本の家庭の「仕込み」のひとつ。ひと瓶作っておくと、毎日の料理が少しだけ丁寧になる。\n発酵の力で素材の旨みを引き出す、日本の台所の知恵です。</p>"
+    }
+  ]
+}
