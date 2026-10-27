@@ -130,31 +130,99 @@ function renderDetail(slug) {
   if (r.embed_url) renderEmbed(r);
 }
 
-function loadScriptOnce(src, id) {
-  if (document.getElementById(id)) return;
-  const s = document.createElement("script");
-  s.src = src;
-  s.async = true;
-  s.id = id;
-  document.body.appendChild(s);
+function loadScript(src, id) {
+  // Returns a promise that resolves when the script has finished loading
+  // (or failed), so callers can reliably run follow-up processing.
+  return new Promise((resolve) => {
+    const existing = document.getElementById(id);
+    if (existing) {
+      if (existing.dataset.loaded === "1") {
+        resolve();
+      } else {
+        existing.addEventListener("load", () => resolve(), { once: true });
+        existing.addEventListener("error", () => resolve(), { once: true });
+        setTimeout(resolve, 3000);
+      }
+      return;
+    }
+    const s = document.createElement("script");
+    s.src = src;
+    s.async = true;
+    s.id = id;
+    s.addEventListener(
+      "load",
+      () => {
+        s.dataset.loaded = "1";
+        resolve();
+      },
+      { once: true }
+    );
+    s.addEventListener("error", () => resolve(), { once: true });
+    document.body.appendChild(s);
+  });
+}
+
+function makeEmbedIframe(r) {
+  // The platforms' official embed pages (post URL + "embed/") render fine
+  // when loaded as an iframe, on every in-app navigation, with no script.
+  const iframe = document.createElement("iframe");
+  iframe.className =
+    r.embed_platform === "instagram"
+      ? "embed-frame embed-frame-ig"
+      : "embed-frame embed-frame-th";
+  iframe.src = r.embed_url.replace(/\/?$/, "/") + "embed/";
+  iframe.title = t().originalPost;
+  iframe.loading = "lazy";
+  iframe.setAttribute("frameborder", "0");
+  iframe.setAttribute("scrolling", "auto");
+  iframe.setAttribute("allowtransparency", "true");
+  return iframe;
+}
+
+function useDirectIframe(r, box) {
+  if (!box.isConnected) return;
+  box.innerHTML = "";
+  box.appendChild(makeEmbedIframe(r));
 }
 
 function renderEmbed(r) {
   const box = document.getElementById("embed-box");
   if (!box) return;
-  const bq = document.createElement("blockquote");
+  if (r.embed_platform === "threads") {
+    // Threads' embed.js only processes blockquotes present at its initial
+    // run: it exposes no re-processing call, and re-loading the script does
+    // not re-scan the page (both verified on the gourmet sites), so embeds
+    // added by in-app navigation stayed blank. Use the official /embed/
+    // page in an iframe directly instead.
+    useDirectIframe(r, box);
+    return;
+  }
   if (r.embed_platform === "instagram") {
+    const bq = document.createElement("blockquote");
     bq.className = "instagram-media";
     bq.setAttribute("data-instgrm-permalink", r.embed_url);
     bq.setAttribute("data-instgrm-version", "14");
     box.appendChild(bq);
-    if (window.instgrm) window.instgrm.Embeds.process();
-    else loadScriptOnce("https://www.instagram.com/embed.js", "ig-embed-js");
-  } else if (r.embed_platform === "threads") {
-    bq.className = "text-post-media";
-    bq.setAttribute("data-text-post-permalink", r.embed_url);
-    box.appendChild(bq);
-    loadScriptOnce("https://www.threads.net/embed.js", "th-embed-js");
+    const process = () => {
+      if (window.instgrm && box.isConnected) {
+        try {
+          window.instgrm.Embeds.process();
+        } catch (e) {
+          /* the fallback below covers this */
+        }
+      }
+    };
+    if (window.instgrm) process();
+    else loadScript("https://www.instagram.com/embed.js", "ig-embed-js").then(process);
+    // Fallback: if the official script did not turn the blockquote into an
+    // iframe (e.g. its load finished after this view was rendered), show
+    // the official /embed/ page directly so the area never stays blank.
+    // The source link under the embed remains as a further fallback.
+    setTimeout(() => {
+      if (!box.isConnected) return;
+      if (box.querySelector("iframe")) return;
+      useDirectIframe(r, box);
+    }, 5000);
   }
 }
 
